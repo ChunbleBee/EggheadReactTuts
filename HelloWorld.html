@@ -1,0 +1,87 @@
+<body>
+    <div id="root">Is this at least working?</div>
+    <script src="https://unpkg.com/react@16.7.0/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@16.7.0/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+    <script src="https://unpkg.com/prop-types@15.6.1/prop-types.js"></script>
+    <script type="text/babel">
+        const rootElem = document.getElementById('root');
+        const element = React.createElement('div', {
+            children: '🌌 Hello Worlds 🌌',
+            className: 'container'
+        });
+
+        const child = 'James Web space telescope successfully deployed!!! 🔭🛰'
+        const anotherElement = <div className='notAContainer' children={child} />
+        const justAnElement = (
+            <React.Fragment>
+                <p>I can't wait to see the result!!!</p>
+            </React.Fragment>
+        )
+
+        /* React Fragment element with minimized form:
+        const justAnElement = (
+            <>
+                <p>Oh I just can't wait to be queeeeeen!!!</p>
+            </>
+        )
+        */
+        
+       
+        // Default function creation method.
+        function Message({children}) {
+            return <div className="message2">{children}</div>
+        }
+        // Type validation for functions
+        Message.propTypes = {
+            children: PropTypes.string.isRequired
+        }
+
+        // Lambda-esque way to create a function.
+        const Message2 = (props) => {
+            return <div className="message">{props.children}</div>;
+        };
+
+        // Full lambda function for Javascript
+        const Message3 = (props) => <div>{props.children}</div>;
+
+        function CountChars (string) {
+            var count = 0;
+            for (let i = 0; i < string.length; i++) {
+                count += 1;
+            }
+            return count;
+        }
+
+        CountChars.propTypes = {
+            string: PropTypes.string.isRequired
+        }
+
+        function ReturnTime() {
+            return Date.now();
+        }
+        
+        const m = <Message children="SPAAAAAACE!!!"/>;
+        const m2 = <Message2 children="Spaaaaace???"/>;
+        const m3 = <Message3 children="woot, is werk."/>;
+        const count = <div> The total number of characters in "Supercalifrajilisticexpialadocious" is: {CountChars("Supercalifrajilisticexpialadocious")}</div>;
+        const count2 = <div> The total number of characters in "" is: {CountChars("")}</div>;
+
+        function Rerender() {
+            let time = <div style={{backgroundColor: 'green', color: 'white'}}>The current time since the epoch is: {ReturnTime()}</div>
+
+            const fragment = React.createElement(React.Fragment,
+                null,
+                element, ' ', anotherElement, justAnElement,
+                m, m2, m3,
+                count,
+                count2,
+                time
+            );
+            ReactDOM.render(fragment, rootElem)
+        }
+    
+        Rerender();
+        setInterval(() => { Rerender() }, 1000);
+    </script>
+</body>
