@@ -106,14 +106,21 @@
 
         const state = {rNumber: getRandomInteger(2**32)};
 
-        const Input = () => {
-            const [fName, setFName] = React.useState(window.localStorage.getItem('fName') || '');
-            const [lName, setLName] = React.useState(window.localStorage.getItem('lName') || '');
-
+        function Input() {
+            // lazy initialization of the react hook
+            // the lambda function will only be called on the initial call of the Input component function,
+            // rather than on every call/rerender.
+            // Not a big deal for this particular usecase, but useful for lots of data stored on local storage.
+            const [fName, setFName] = React.useState(() => { window.localStorage.getItem('fName') || '' });
+            const [lName, setLName] = React.useState(() => { window.localStorage.getItem('lName') || '' });
+            
+            // stores to local storage.
+            // the 'dependency array' tells the useEffect() to not update the local state to not update unless
+            // one of the items in the array is updated, rather than on every call of of the component.
             React.useEffect(() => {
                 window.localStorage.setItem('fName', fName);
                 window.localStorage.setItem('lName', lName);
-            });
+            }, [fName, lName]);
     
             const handleClick = () => {
                 state.rNumber = getRandomInteger(2**32);
@@ -136,8 +143,49 @@
             );
         };
 
-        function Rerender() {
+        function AForm() {
+            const valueRef = React.useRef();
 
+            function calcSqrt(event) {
+                event.preventDefault();
+                const delta = 0.00001;
+                const target = parseFloat(event.target.elements.num.value);
+                let number = target/2;
+                let fraction = 1;
+
+                while (number - fraction > delta) {
+                    let diff = Math.abs(target - number);
+                    number = (number + fraction) / 2;
+                    fraction = target / number;
+                }
+
+                valueRef.current = number;
+            };
+            
+            function NumChanged(event){
+                console.dir(event);
+                const limit = 20;
+                if (event.target.elements.num.value > limit) {
+                    event.target.elements.num.value = event.target.elements.num.value.slice(0, limit);
+                }
+            }
+
+            return (
+                <div>
+                    <form onSubmit={calcSqrt}>
+                        <div>
+                            <label for='num'>Number to Calculate the Sqrt of: </label>
+                            <input id='num' type='text' onChange={NumChanged} />
+                        </div>
+                        <button type='submit'>Calculate it!</button>
+                    </form>
+                    <p>{valueRef.current || "No number calculated yet!"}</p>
+                </div>
+            );
+        }
+
+        function Rerender() {
+            /*
             const fragment = (
                 <div>
                     {element}
@@ -154,7 +202,7 @@
                 </div>
             );
 
-            /* // Also valid:
+            // Also valid:
             let time = <div style={{backgroundColor: 'green', color: 'white'}}>The current time since the epoch is: {ReturnTime()}</div>
             let box = <Box className="additional" style="" size={changeSize()}/>;
             let input = <Input />;
@@ -169,8 +217,25 @@
                 input,
                 box
             );
-            */
+
             ReactDOM.render(fragment, rootElem);
+            */
+
+            ReactDOM.render(
+                <div>
+                    {element}
+                    {anotherElement}
+                    {justAnElement}
+                    {m}
+                    {m2}
+                    {m3}
+                    {count}
+                    {count2}
+                    <div style={{backgroundColor: 'green', color: 'white'}}>The current time since the epoch is: {ReturnTime()}</div>;
+                    <Input />
+                    <AForm />
+                    <Box className="additional" style="" size={changeSize()}/>
+                </div>, rootElem);
         };
 
         Rerender();
