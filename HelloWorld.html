@@ -1,7 +1,7 @@
 <body>
     <div id="root">Is this at least working?</div>
-    <script src="https://unpkg.com/react@16.7.0/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@16.7.0/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/react@16.12.0/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
     <script src="https://unpkg.com/prop-types@15.6.1/prop-types.js"></script>
 
@@ -34,13 +34,13 @@
             className: 'container'
         });
 
-        const child = 'James Web space telescope successfully deployed!!! 🔭🛰'
-        const anotherElement = <div className='notAContainer' children={child} />
+        const child = 'James Web space telescope successfully deployed!!! 🔭🛰';
+        const anotherElement = <div className='notAContainer' children={child} />;
         const justAnElement = (
             <React.Fragment>
                 <p>I can't wait to see the results!!!</p>
             </React.Fragment>
-        )
+        );
 
         /* React Fragment element with minimized form:
         const justAnElement = (
@@ -54,11 +54,11 @@
         // Default function creation method.
         function Message({children}) {
             return <div className="message2">{children}</div>
-        }
+        };
         // Type validation for functions
         Message.propTypes = {
             children: PropTypes.string.isRequired
-        }
+        };
 
         // Lambda-esque way to create a function.
         const Message2 = (props) => {
@@ -74,15 +74,15 @@
                 count += 1;
             }
             return count;
-        }
+        };
 
         CountChars.propTypes = {
             string: PropTypes.string.isRequired
-        }
+        };
 
         function ReturnTime() {
             return Date.now();
-        }
+        };
         
         const m = <Message children="SPAAAAAACE!!!"/>;
         const m2 = <Message2 children="Spaaaaace???"/>;
@@ -98,41 +98,66 @@
                 case 1: return "medium";
                 case 2: return "large";
             }
-        }
+        };
 
         function getRandomInteger(max) {
             return Math.floor(Math.random() * max);
-        }
+        };
 
-        const state = {rNumber: getRandomInteger(2**32), fName:  "", lName: ""};
+        const state = {rNumber: getRandomInteger(2**32)};
 
-        function Input() {
-            function handleClick() {
+        const Input = () => {
+            const [fName, setFName] = React.useState(window.localStorage.getItem('fName') || '');
+            const [lName, setLName] = React.useState(window.localStorage.getItem('lName') || '');
+
+            React.useEffect(() => {
+                window.localStorage.setItem('fName', fName);
+                window.localStorage.setItem('lName', lName);
+            });
+    
+            const handleClick = () => {
                 state.rNumber = getRandomInteger(2**32);
                 Rerender();
-            }
+            };
 
-            function handleText() {
-                let strtok = String(event.target.value).split(' ', 2);
-                state.fName = strtok[0];
-                state.lName = strtok[1] == undefined ? "" : strtok[1];
+            const handleText = () => {
+                let strtok = event.target.value.split(' ', 2);
+                setFName(strtok[0]);
+                setLName((strtok[1] == undefined ? "" : strtok[1]));
                 Rerender();
-            }
+            };
 
             return (
                 <div>
                     <button onClick={handleClick}>Current Random Number: {state.rNumber}</button>
-                    <p>Your name is: {state.fName != "" ? state.fName : "No First"} {state.lName != "" ? state.lName : "No Last"}</p>
-                    <input type="textbox" onChange={handleText}/>
+                    <p>Your name is: {fName != "" ? fName : "No First"} {lName != "" ? lName : "No Last"}</p>
+                    <input type="textbox" onChange={handleText} />
                 </div>
             );
-        }
+        };
 
         function Rerender() {
-            let s = changeSize();
-            let time = <div style={{backgroundColor: 'green', color: 'white'}}>The current time since the epoch is: {ReturnTime()}</div>;
-            let box = <Box className="additional" style="" size={s}/>;
-            let input = Input();
+
+            const fragment = (
+                <div>
+                    {element}
+                    {anotherElement}
+                    {justAnElement}
+                    {m}
+                    {m2}
+                    {m3}
+                    {count}
+                    {count2}
+                    <div style={{backgroundColor: 'green', color: 'white'}}>The current time since the epoch is: {ReturnTime()}</div>;
+                    <Input />
+                    <Box className="additional" style="" size={changeSize()}/>
+                </div>
+            );
+
+            /* // Also valid:
+            let time = <div style={{backgroundColor: 'green', color: 'white'}}>The current time since the epoch is: {ReturnTime()}</div>
+            let box = <Box className="additional" style="" size={changeSize()}/>;
+            let input = <Input />;
 
             const fragment = React.createElement(React.Fragment,
                 null,
@@ -144,8 +169,10 @@
                 input,
                 box
             );
+            */
             ReactDOM.render(fragment, rootElem);
-        }
+        };
+
         Rerender();
         setInterval(() => { Rerender() }, 1000);
     </script>
