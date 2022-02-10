@@ -26,6 +26,7 @@
             height: 200px;
         }
     </style>
+
     <script type="text/babel">
         const rootElem = document.getElementById('root');
         const element = React.createElement('div', {
@@ -37,7 +38,7 @@
         const anotherElement = <div className='notAContainer' children={child} />
         const justAnElement = (
             <React.Fragment>
-                <p>I can't wait to see the result!!!</p>
+                <p>I can't wait to see the results!!!</p>
             </React.Fragment>
         )
 
@@ -89,8 +90,7 @@
         const count = <div> The total number of characters in "Supercalifrajilisticexpialadocious" is: {CountChars("Supercalifrajilisticexpialadocious")}</div>;
         const count2 = <div> The total number of characters in "" is: {CountChars("")}</div>;
 
-        const Box = ({className, style, size, ...rest}) => <div className={`box ${className} box-${size}`} style={{...style}} {...rest}></div>;
-        var msize = "small";
+        const Box = ({className='', style, size='', ...rest}) =>  <div className={`box ${className} box-${size}`} style={{...style}} {...rest}>{size} sized box!</div>;
 
         const changeSize = (size) => {
             switch (size) {
@@ -101,12 +101,9 @@
             }
         }
 
-        function Rerender() {
+        function Rerender(size) {
             let time = <div style={{backgroundColor: 'green', color: 'white'}}>The current time since the epoch is: {ReturnTime()}</div>
-            let box = () => {
-                msize = changeSize(msize);
-                return Box("additionalClassNames", "", msize);
-            }
+            let box = <Box className="additional" style="" size={size}/>
 
             const fragment = React.createElement(React.Fragment,
                 null,
@@ -119,8 +116,9 @@
             );
             ReactDOM.render(fragment, rootElem);
         }
-    
-        Rerender();
-        setInterval(() => { Rerender() }, 1000);
+        var msize = "small";
+        Rerender(msize);
+        setInterval(() => { msize = changeSize(msize); }, Math.floor(Math.random() * 500));
+        setInterval(() => { Rerender(msize) }, 1000);
     </script>
 </body>
