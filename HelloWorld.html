@@ -92,18 +92,47 @@
 
         const Box = ({className='', style, size='', ...rest}) =>  <div className={`box ${className} box-${size}`} style={{...style}} {...rest}>{size} sized box!</div>;
 
-        const changeSize = (size) => {
-            switch (size) {
-                case "small": return "medium";
-                case "medium": return "large";
-                case "large":;
-                default: return "small";
+        const changeSize = () => {
+            switch (getRandomInteger(3)) {
+                case 0: return "small";
+                case 1: return "medium";
+                case 2: return "large";
             }
         }
 
-        function Rerender(size) {
-            let time = <div style={{backgroundColor: 'green', color: 'white'}}>The current time since the epoch is: {ReturnTime()}</div>
-            let box = <Box className="additional" style="" size={size}/>
+        function getRandomInteger(max) {
+            return Math.floor(Math.random() * max);
+        }
+
+        const state = {rNumber: getRandomInteger(2**32), fName:  "", lName: ""};
+
+        function Input() {
+            function handleClick() {
+                state.rNumber = getRandomInteger(2**32);
+                Rerender();
+            }
+
+            function handleText() {
+                let strtok = String(event.target.value).split(' ', 2);
+                state.fName = strtok[0];
+                state.lName = strtok[1] == undefined ? "" : strtok[1];
+                Rerender();
+            }
+
+            return (
+                <div>
+                    <button onClick={handleClick}>Current Random Number: {state.rNumber}</button>
+                    <p>Your name is: {state.fName != "" ? state.fName : "No First"} {state.lName != "" ? state.lName : "No Last"}</p>
+                    <input type="textbox" onChange={handleText}/>
+                </div>
+            );
+        }
+
+        function Rerender() {
+            let s = changeSize();
+            let time = <div style={{backgroundColor: 'green', color: 'white'}}>The current time since the epoch is: {ReturnTime()}</div>;
+            let box = <Box className="additional" style="" size={s}/>;
+            let input = Input();
 
             const fragment = React.createElement(React.Fragment,
                 null,
@@ -112,13 +141,12 @@
                 count,
                 count2,
                 time,
+                input,
                 box
             );
             ReactDOM.render(fragment, rootElem);
         }
-        var msize = "small";
-        Rerender(msize);
-        setInterval(() => { msize = changeSize(msize); }, Math.floor(Math.random() * 500));
-        setInterval(() => { Rerender(msize) }, 1000);
+        Rerender();
+        setInterval(() => { Rerender() }, 1000);
     </script>
 </body>
