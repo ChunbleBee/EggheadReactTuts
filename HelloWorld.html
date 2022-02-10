@@ -4,6 +4,28 @@
     <script src="https://unpkg.com/react-dom@16.7.0/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
     <script src="https://unpkg.com/prop-types@15.6.1/prop-types.js"></script>
+
+    <style>
+        .box {
+            border: 1px dashed black;
+            border-radius: 3px;
+        }
+
+        .box-small {
+            width: 50px;
+            height: 50px;
+        }
+
+        .box-medium {
+            width: 100px;
+            height: 100px;
+        }
+
+        .box-large {
+            width: 200px;
+            height: 200px;
+        }
+    </style>
     <script type="text/babel">
         const rootElem = document.getElementById('root');
         const element = React.createElement('div', {
@@ -67,8 +89,24 @@
         const count = <div> The total number of characters in "Supercalifrajilisticexpialadocious" is: {CountChars("Supercalifrajilisticexpialadocious")}</div>;
         const count2 = <div> The total number of characters in "" is: {CountChars("")}</div>;
 
+        const Box = ({className, style, size, ...rest}) => <div className={`box ${className} box-${size}`} style={{...style}} {...rest}></div>;
+        var msize = "small";
+
+        const changeSize = (size) => {
+            switch (size) {
+                case "small": return "medium";
+                case "medium": return "large";
+                case "large":;
+                default: return "small";
+            }
+        }
+
         function Rerender() {
             let time = <div style={{backgroundColor: 'green', color: 'white'}}>The current time since the epoch is: {ReturnTime()}</div>
+            let box = () => {
+                msize = changeSize(msize);
+                return Box("additionalClassNames", "", msize);
+            }
 
             const fragment = React.createElement(React.Fragment,
                 null,
@@ -76,9 +114,10 @@
                 m, m2, m3,
                 count,
                 count2,
-                time
+                time,
+                box
             );
-            ReactDOM.render(fragment, rootElem)
+            ReactDOM.render(fragment, rootElem);
         }
     
         Rerender();
